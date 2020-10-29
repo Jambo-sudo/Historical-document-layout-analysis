@@ -11,7 +11,7 @@ The following figure shows a example of result image. The model marked out multi
 Another docker is [MongoDB](https://www.mongodb.com/), which is a NoSQL database that can be used to store json-like documents. The MongoDB docker use to store our json files corresponding to the result image. The json file contains all information about the inference. For our example image above, the json file looks like this:
 * labels:"{"text": 5, "figure": 1, "title": 3, "page": 1}"
 * Image name:"1990-075.jpg"
-* Image path:"/home/appuser/detectron2_repo/code/static/result"
+* Image path:"/home/appuser/detectron2_repo/code/static/result"  
 The labels part including all the labels detected in our input image and the number of each label. Since we use MongoDB to store these data, if necessary, the inference results can do regular search.
 
 ## Pipeline
