@@ -6,7 +6,7 @@ The purpose of this project is to build a document layout analysis model and int
 ## Architecture
 This project is mainly composed of two dockers. One is used to run inference part, and a flask framework to build the website and accept input data. This docker also mounts a volume, which contains all the inference results image. This volume can be bound to the local storage to achieve data persistence. Another docker is MongoDB, which is a NoSQL database that can be used to store json-like documents.
 
-The model...
+The model inference part uses Mask-RCNN and runs on the detectron2 framework.The model runs in docker (currently on my computer). In addition, there is another MongoDB docker to store our json files, and a mounted volume to store the result images.The following figure shows a example of result image. We have marked out multiple layout divisions based on the original picture.Our model can recognize 6 different document layouts: title, text, figure, caption, table and page.
 
 ## Pipeline
 You can choose to upload one or more document images, the format is JPG, or PBM. If you data is PDF, you can use pdfimages to convert. 
