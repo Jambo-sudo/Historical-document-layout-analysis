@@ -12,10 +12,18 @@ The following figure shows a example of result image. The model marked out multi
 
 Another docker is [MongoDB](https://www.mongodb.com/), which is a NoSQL database that can be used to store json-like documents. The MongoDB docker use to store our json files corresponding to the result image. The json file contains all information about the inference. For our example image above, the json file looks like this:
 * labels:"{"text": 5, "figure": 1, "title": 3, "page": 1}"
-* Image name:"1990-075.jpg"
+* Image name:"example.jpg"
 * Image path:"/home/appuser/detectron2_repo/code/static/result"  
 
 The labels part including all the labels detected in our input image and the number of each label. Since we use MongoDB to store these data, if necessary, the inference results can do regular search.
+
+## Model
+Detectron2 provides a pre-trained model we can simply use it though [model zoo](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md). Obviously, we cannot use this model in our project directly. In order to make this model suitable for our project, we need to prepare a training set and train this model again. This process is also called transfer learning. In this project, we use [labelme](https://github.com/wkentaro/labelme) to label our data. We manually annotated 550 data, 500 for training and 50 for test. Detectron2 provides a colab tutorial where you can easily train your own model with a free GPU. 
+After 2000 iterations of training, the AP value of our model reach to 0.57. 
+
+Usually the models provided by model zoo are more general, which means it probably not suitable for our project. Therefore, if we can find a model close to our project, the AP value will increase under the same training parameters. Fortunately, we found a similar [project](https://github.com/hpanwar08/detectron2). 
+This project trained a powerful Mask-RCNN model for document layout, and their AP value is close to 90. Of course, they paid a great price. They used the largest document layout dataset---[PubLayNet](https://github.com/ibm-aur-nlp/PubLayNet) for training, this training set contains more than 100,000 images. For ordinary document layout analysis, this model is powerful enough. But we hope to get a model that is more suitable for our project, rather than a powerful model. Therefore, we use our 500 dataset to perform transfer learning again on this model. Under the same training parameters, our AP value reached 60. This AP value is acceptable, but there is no doubt that our AP value needs to be improved. Since this is an individual project, in order to speed up the progress, we will use this model in project. The most direct and effective way to increase the AP value is to increase the number of training sets. We can completely label the data manually, just as we did before. But since we already got a model, we can use this model to generate the training set. That is, we regared the inference result of this model as ground truth. The inference of the model will undoubtedly have errors, because our model is not perfect (obviously, if our model is perfect, there is no need to continue training). But in this way, we can easily generate thousands of data for training. In addition to the AP value, we can also add noise to the training set to improve the robustness of our model. These will be part of the future work.
+
 
 ## Pipeline
 You can choose to upload one or more document images, the input format should be JPG, or PBM. If you data is PDF, you can use [pdfimages](https://github.com/facebookresearch/detectron2) to convert. 
