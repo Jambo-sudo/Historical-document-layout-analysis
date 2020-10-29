@@ -6,12 +6,13 @@ The purpose of this project is to build a document layout analysis model and int
 ## Architecture
 This project is mainly composed of two dockers. One docker including the model inference, a flask framework to build the website and accept input data. This docker also mounts a volume, which contains all the inference results image. This volume can be bound to the local storage to achieve data persistence. The model inference part uses [Mask-RCNN](https://arxiv.org/abs/1703.06870) and runs on the [detectron2](https://github.com/facebookresearch/detectron2) framework. 
 
-The following figure shows a example of result image. The model marked out multiple layout divisions based on the original input. Our model can recognize 6 different document layouts: title, text, figure, caption, table and page. <img src="static/result/example.jpg" width="50%" text-align:center alt="example image">
+The following figure shows a example of result image. The model marked out multiple layout divisions based on the original input. Our model can recognize 6 different document layouts: title, text, figure, caption, table and page. <img src="static/result/example.jpg" text-align:center alt="example image" width="50" height="50">
 
 Another docker is [MongoDB](https://www.mongodb.com/), which is a NoSQL database that can be used to store json-like documents. The MongoDB docker use to store our json files corresponding to the result image. The json file contains all information about the inference. For our example image above, the json file looks like this:
 * labels:"{"text": 5, "figure": 1, "title": 3, "page": 1}"
 * Image name:"1990-075.jpg"
 * Image path:"/home/appuser/detectron2_repo/code/static/result"  
+
 The labels part including all the labels detected in our input image and the number of each label. Since we use MongoDB to store these data, if necessary, the inference results can do regular search.
 
 ## Pipeline
