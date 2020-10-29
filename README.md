@@ -1,19 +1,20 @@
-# Document-layout-analysis
+# Historical document layout analysis
 
 ## Background
-The purpose of this project is to build a document layout analysis model and interact with users through a webpage. Since this project mainly serves a historical literature research group, this model may not be suitable for other types of input images. But we can easily achieve this by using different models.
+The purpose of this project is to build a document layout analysis model and interact with users through a webpage. Since this project mainly serves a historical literature research group, this model may not be suitable for other types of input images. But we can easily deal with other tasks by using different models.
 
 ## Architecture
-This project is mainly composed of two dockers. One is used to run inference part, and a flask framework to build the website and accept input data. This docker also mounts a volume, which contains all the inference results image. This volume can be bound to the local storage to achieve data persistence. Another docker is MongoDB, which is a NoSQL database that can be used to store json-like documents.
+This project is mainly composed of two dockers. One docker including the model inference, a flask framework to build the website and accept input data. This docker also mounts a volume, which contains all the inference results image. This volume can be bound to the local storage to achieve data persistence. The model inference part uses [Mask-RCNN](https://arxiv.org/abs/1703.06870) and runs on the [detectron2](https://github.com/facebookresearch/detectron2) framework. 
 
-The model inference part uses [Mask-RCNN](https://arxiv.org/abs/1703.06870) and runs on the [detectron2](https://github.com/facebookresearch/detectron2) framework.The model runs in docker (currently on my computer). In addition, there is another MongoDB docker to store our json files, and a mounted volume to store the result images.The following figure shows a example of result image. We have marked out multiple layout divisions based on the original picture.Our model can recognize 6 different document layouts: title, text, figure, caption, table and page.
+The following figure shows a example of result image. The model marked out multiple layout divisions based on the original picture. Our model can recognize 6 different document layouts: title, text, figure, caption, table and page.
+<img src="static/result/example.jpg" width="50%" alt="example image">
 
-The json file contains more information about the inference. For our example, the json file looks like this:
-* labels:"{"text": 5, "figure": 1, "title": 3, "page": 1}"</li>
+
+Another docker is MongoDB, which is a NoSQL database that can be used to store json-like documents. The MongoDB docker use to store our json files corresponding to the result image. The json file contains more information about the inference. For our example, the json file looks like this:
+* labels:"{"text": 5, "figure": 1, "title": 3, "page": 1}"
 * Image name:"1990-075.jpg"
 * image path:"/home/appuser/detectron2_repo/code/static/result"
-We use MongoDB to store these data, it means that if necessary, the inference results support regular search.
-
+The labels including all the labels detected in our input image and the number of each label. Since we use MongoDB to store these data, if necessary, the inference results can do regular search.
 
 ## Pipeline
 You can choose to upload one or more document images, the format is JPG, or PBM. If you data is PDF, you can use [pdfimages](https://github.com/facebookresearch/detectron2) to convert. 
