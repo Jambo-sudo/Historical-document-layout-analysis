@@ -11,11 +11,23 @@ The following figure shows a example of result image. The model marked out multi
 <img src="static/result/example.jpg" text-align:center alt="example image" width="500">  
 
 Another docker is [MongoDB](https://www.mongodb.com/), which is a NoSQL database that can be used to store json-like documents. The MongoDB docker use to store our json files corresponding to the result image. The json file contains all information about the inference. For our example image above, the json file looks like this:
-* labels:"{"text": 5, "figure": 1, "title": 3, "page": 1}"
+* Labels:"{"text": 5, "figure": 1, "title": 3, "page": 1}"
 * Image name:"example.jpg"
 * Image path:"/home/appuser/detectron2_repo/code/static/result"  
 
 The labels part including all the labels detected in our input image and the number of each label. Since we use MongoDB to store these data, if necessary, the inference results can do regular search.
+
+### Backend
+Since our inference part is written in Python, naturally we hope to build the backend through Python. In this project, we use the flask framework. Flask is good enough for this project, and it can be scaled up easily if necessary. Flask is used to achieve the following two tasks:
+1. Accept user upload data and return corresponding HTML webpage.
+2. Connect to MongoDB through the PyMongo library and insert the json file to MongoDB.
+You can find more details in the maincode.py file.
+
+### Frontend
+The frontend contains two html files, start.html and result.html. Initially, flask will return start.html, and when the backend finished, it will return result.html. 
+
+
+
 
 ## Model Training
 Detectron2 provides a pre-trained model's weight we can simply use it though [model zoo](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md). Obviously, we cannot use this weight in our project directly. In order to make this weight suitable for our project, we need to prepare a training set and train this weight again. This process is also called transfer learning. In this project, we use [labelme](https://github.com/wkentaro/labelme) to label our data. We manually annotated 550 data and 6919 labels, 500 data for training and 50 data for test. Detectron2 provides a [colab tutorial](https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5) where you can easily train your own model with a free GPU. 
