@@ -49,6 +49,9 @@ If we do not have the same image in our volume, then we enter the inference stag
 The inference result is an annotated image and a json file containing the inference result. The image will be saved in the volume, and the json file will be saved in MongoDB. 
 When all the input has been processed (found in the database, or completed inference), we will get a result list, which contains the path of all the result images. This list will be sent to the front end, HTML will read this list, and show the result. Since we use cv2 to read and save images. In order to avoid save errors, all resulting images will be converted to jpg format.
 
+## How to use
+We provide docker compose to build up whole project, you can use your own model as well.
+
 ## Environment
 The inference part don't requires CUDA. But if your device has a CUDA-based GPU, it will be enabled without modifying the code. Our test platform is Intel i7-8809g, without CUDA, inferring a single image takes around 7 seconds. 
 
