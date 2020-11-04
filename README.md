@@ -8,7 +8,7 @@ This project is mainly composed of two dockers. One docker including the model i
 
 The following figure shows a example of result image. The model marked out multiple layout divisions based on the original input. Our model can recognize 6 different document layouts: title, text, figure, caption, table and page. 
 
-<img src="static/result/example.jpg" text-align:center alt="example image" width="500">  
+<img src="image/example.jpg" text-align:center alt="example image" width="500">  
 
 Another docker is [MongoDB](https://www.mongodb.com/), which is a NoSQL database that can be used to store json-like documents. The MongoDB docker use to store our json files corresponding to the result image. The json file contains all information about the inference. For our example image above, the json file looks like this:
 * Labels:"{"text": 5, "figure": 1, "title": 3, "page": 1}"
