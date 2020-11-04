@@ -4,7 +4,7 @@
 The purpose of this project is to build a document layout analysis model and interact with users through a webpage. Since this project mainly serves a historical literature research group, this model may not be suitable for other types of input images. But you can easily deal with other tasks by using different models.
 
 ## Architecture
-This project is mainly composed of two dockers. One docker including the model inference, a flask framework to build the website and accept input data. This docker also mounts a volume, which contains all the inference results image. This volume can be bound to the local storage to achieve data persistence. The model inference part uses [Mask-RCNN](https://arxiv.org/abs/1703.06870) and runs on the [detectron2](https://github.com/facebookresearch/detectron2) framework. 
+This project is mainly composed of two dockers. One docker including the model inference, a flask framework to build the website and accept input data. This docker can mounts a volume to achieve result data persistence. The model inference part uses [Mask-RCNN](https://arxiv.org/abs/1703.06870) and runs on the [detectron2](https://github.com/facebookresearch/detectron2) framework. 
 
 The following figure shows a example of result image. The model marked out multiple layout divisions based on the original input. Our model can recognize 6 different document layouts: title, text, figure, caption, table and page. 
 
@@ -21,11 +21,12 @@ The labels part including all the labels detected in our input image and the num
 Since our inference part is written in Python, naturally we hope to build the backend through Python. In this project, we use the flask framework. Flask is good enough for this project, and it can be scaled up easily if necessary. Flask is used to achieve the following two tasks:
 1. Accept user upload data and return corresponding HTML webpage.
 2. Connect to MongoDB through the PyMongo library and insert the json file to MongoDB.
-You can find more details in the maincode.py file.
+You can find more details in the code/maincode.py file.
 
 ### Frontend
 The frontend contains two html files, start.html and result.html. Initially, flask will return start.html, and when the backend finished, it will return result.html. 
-
+The start page look like this:
+<img src="image/start.jpg" text-align:center alt="web start page" width="800"> 
 
 
 
