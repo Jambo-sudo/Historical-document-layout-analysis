@@ -8,6 +8,7 @@ In order to use our model, we need to provide a trained model weight as well . W
 # How to use
 ## Use our model weight
 Copy this folder in your local machine, download the model weight from the above link, copy the model weight into code folder. Than, cd to this folder and run `docker-compose up`. When you see 2 dockers start, open the browser and enter localhost:5000. If all goes well, you should see the start page.
+
 In addition, the detectron2 image is more than 7 GB, it may take half an hour to download if the image not available locally.
 
 ## Use your own model
