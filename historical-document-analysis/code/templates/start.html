@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thesis project</title>
+</head>
+
+<style>
+    .buttons1 {
+        height:40px;
+		background-size:contain;
+        text-align:center;
+    }
+	
+	.bg {
+	background-image: url(static/background.jpg);
+	background-repeat:no-repeat;
+	background-size:100% 100%;
+	background-attachment:scroll;
+	opacity: 0.9;
+	height:400px;
+	width: 100%;
+	}
+	
+</style>
+
+
+<body>
+
+	<div class="bg"></div>
+	
+	<h1 style="text-align: center;">Document layout analysis</h1>
+	
+	<h2>Introduction</h2>
+	<p>
+	This webpage is a thesis project. 
+	The purpose of this project is to build a document layout analysis system and interact with users through this webpage.
+	Since this project mainly serves a historical literature research group, this model may not be suitable for other types of input images. 
+	But you can easily achieve this by using different models. 
+	<br/>
+	The model inference part uses <a href="https://arxiv.org/abs/1703.06870">Mask-RCNN</a> 
+	and runs on the <a href="https://github.com/facebookresearch/detectron2">detectron2</a> framework. 
+	The AP of this model is <b>0.6</b>.
+	
+	The inference part don't requires CUDA. But if your device has a CUDA-based GPU, it will be enabled without modifying the code. 
+	Our test platform is Intel i7-8809g, without CUDA, inferring a single image takes around 7 seconds.
+	For more information you can find in this
+	<a href="https://github.com/Jambo-sudo/Historical-document-layout-analysis/blob/main/README.md">github</a>.
+	</p>
+	
+	<br/>
+	<h2>How to use</h2>
+	<p>
+	You can choose to upload one or more document images, and click submit button. Our supported format are <b>JPG</b> and <b>PBM</b>. 
+	If you data is PDF, you can use <a href="https://github.com/facebookresearch/detectron2">pdfimages</a> to convert. 
+	All the result image will be saved in <b>JPG</b> format.
+	</p>
+	
+	<p style="color:red; font-size:30px;">{{warning}}</p>
+	
+    <form action="" enctype='multipart/form-data' method='POST'>
+        <input type="file" 
+                name="file" 
+                multiple
+                accept=".pbm,.jpeg,.jpg,"
+                style="margin-top:20px;"/>
+        <br>
+        <input type="submit" value="Upload" class="button-new" style="margin-top:15px;"/>
+    </form>
+	
+	<div class="main_part" style="text-align: center;">
+		<p id="image_name"> Example of result
+		</p>
+		<img id="image_show" width="450px" style="margin: 0 auto;" 
+			src='static/example.jpg'
+			alt='image not found, please check file path templates/images'>
+		</img>
+	<div>
+	
+</body>
+</html>

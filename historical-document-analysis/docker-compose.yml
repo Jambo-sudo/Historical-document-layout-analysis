@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  detectron2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        USER_ID: ${USER_ID:-1000}
+    ports:
+        - "5000:5000"
+    volumes:
+      - /home/jianbo/ftest:/home/appuser/detectron2_repo/code/static/result
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    depends_on:
+        - mongodb
+
+  mongodb:
+    image: "mongo:latest"
+    ports:
+        - "27017:27017"
+
+volumes:
+  ftest:
+

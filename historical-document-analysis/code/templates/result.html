@@ -1,0 +1,104 @@
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+<style>
+    .buttons1 {
+        height:40px;
+		background-size:contain;
+        text-align:center;
+    }
+	
+	.bg {
+	background-image: url(static/background.jpg);
+	background-repeat:no-repeat;
+	background-size:100% 100%;
+	background-attachment:scroll;
+	opacity: 0.9;
+	height:400px;
+	width: 100%;
+	}
+	
+</style>
+
+<body>
+
+	<div class="bg"></div>
+	
+	<div class="intro">
+		<h1 style="text-align: center;">Document layout analysis</h1>
+		
+		<p>
+		The inference is over, you can preview all the results here. 
+		If you want to copy results, they are in the static/result folder 
+		If you mount a volume, then they should also in your local volume path too.
+		</p>
+		<p>
+		You can continue to input images. Our supported format are <b>JPG</b> and <b>PBM</b>,
+		the results are <b>JPG</b> format.
+		</p>
+		
+	</div>
+	
+    <form action="" enctype='multipart/form-data' method='POST' >
+        <input type="file" 
+        name="file" 
+        multiple
+        accept=".pbm,.jpeg,.jpg"
+        style="margin-top:10px;"/>
+        <br>
+        <input type="submit" value="submit" class="button-new" style="margin-top:5px;"/>
+    </form>
+
+    <div class="main_part" style="text-align: center;">
+		<p id="image_name"></p>
+        <img id="image_show" width="450px" style="margin: 0 auto;" alt='image not found, please check file path static/result'>
+		</img>
+		
+        <div class="buttons">
+			<button id="pre" onclick="page_change(-1)" disabled="true">Previous</button>
+			<button id="next" onclick="page_change(1)">Next</button>
+            <h6 id="pageCount" style="display:inline">1/1</h6>
+        </div>
+		
+    </div>
+
+<script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+<script>
+    var indexImage = 0;
+	//let imagelist = ['1990-075.jpg','1990-106.jpg','1990-188.jpg'];
+	let imagelist = {{image_list}};
+	
+	$("#image_show").attr('src', imagelist[indexImage]);
+    pageCount();
+	imageName();
+
+	function page_change(nt) {
+	indexImage = indexImage + nt;
+	$("#image_show").attr('src', imagelist[indexImage]);
+	if (indexImage > 0) {
+			document.getElementById("pre").disabled=false;
+        }
+		else{
+		document.getElementById("pre").disabled=true;
+		}
+    if (indexImage == imagelist.length - 1) {
+            $('#next').attr('disabled', true);
+        }
+		else{
+		$('#next').attr('disabled', false);
+		}
+	pageCount();
+	imageName();
+	}
+	
+    function pageCount() {
+        $('#pageCount').text('page:' + (indexImage+1) + '/' + imagelist.length);
+    }
+	
+	function imageName(){
+		$('#image_name').text('Image name:' + " " + (imagelist[indexImage]));
+	}
+</script>
+
+</body>
+</html>
