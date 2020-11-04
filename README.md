@@ -25,9 +25,11 @@ You can find more details in the code/maincode.py file.
 
 ### Frontend
 The frontend contains two html files, start.html and result.html. Initially, flask will return start.html, and when the backend finished, it will return result.html. 
-The start page look like this:
-<img src="image/start.png" text-align:center alt="web start page" width="800"> 
 
+The start page look like this:
+<img src="image/start.png" text-align:center alt="web start page" width="1000"> 
+When the infer done, you can see the result in webpage, like below:
+<img src="image/result.png" text-align:center alt="web start page" width="1000"> 
 
 
 ## Model Training
