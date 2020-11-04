@@ -6,6 +6,8 @@ The DLA_mask_rcnn_X_101_32x8d_FPN_3x.yaml file is used to build the model. Note,
 In order to use our model, we need to provide a trained model weight as well . We trained a model with AP = 0.6. You can download it [here](https://drive.google.com/file/d/1-tUA7c8Mlsxwh1hiCldrs-6sDNqQivGm/view?usp=sharing). 
 
 # How to use
+To run this project, you need to install docker and docker compose. The test platform is docker based on WSL2. CUDA is not necessary. If your device has CUDA, it will be used by default. If you don't want to use CUDA, then you can modify it in code/deteinfer.py.
+
 ## Use our model weight
 Copy this folder in your local machine, download the model weight from the above link, copy the model weight into code folder. Than, cd to this folder and run `docker-compose up`. When you see 2 dockers start, open the browser and enter localhost:5000. If all goes well, you should see the start page.
 
