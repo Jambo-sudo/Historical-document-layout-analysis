@@ -1,0 +1,6 @@
+opencv-python
+numpy
+flask_pymongo
+Pillow==7.1.0
+gunicorn
+requests==2.22.0
