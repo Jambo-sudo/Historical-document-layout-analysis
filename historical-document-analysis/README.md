@@ -5,6 +5,9 @@ The docker-compose.yml file in this folder will build two dockers. One is MongoD
 The DLA_mask_rcnn_X_101_32x8d_FPN_3x.yaml file is used to build the model. Note, this yaml file is not the weight of the model, but describes the model we want to use, that is, tells detectron2 how to build this model. 
 In order to use our model, we need to provide a trained model weight as well . We trained a model with AP = 0.6. You can download it [here](https://drive.google.com/file/d/1-tUA7c8Mlsxwh1hiCldrs-6sDNqQivGm/view?usp=sharing). 
 
+The requirements.txt contains the libraries needed. In the process of building docker through dockerfile, all libraries will be installed according to this file.
+
+
 # How to use
 To run this project, you need to install docker and docker compose. The test platform is docker based on WSL2. CUDA is not necessary. If your device has CUDA, it will be used by default. If you don't want to use CUDA, then you can modify it in code/deteinfer.py.
 
