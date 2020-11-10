@@ -1,0 +1,19 @@
+{% extends "search.html" %}
+
+{% block result %}
+<p>For your search: <b>{{keyword}}</b></p>
+<p style="color:red; font-size:30px;">
+    No results matched your keyword. 
+</p>
+
+<p>
+    You can either change your keyword, or upload images to infer. 
+    All inferred results will be saved in the database, for you next search.
+</p>
+{% endblock %}
+
+{% block main %}
+    <p>
+        No results can be displayed.
+    </p>
+{% endblock %}

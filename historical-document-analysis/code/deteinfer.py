@@ -15,32 +15,46 @@ MetadataCatalog.get("dla_train").thing_classes = ['caption', 'figure', 'page', '
 
 def convert_dic(pred_class, path):
   classes = ['caption', 'figure', 'page', 'table', 'title', 'text']
+
+  # convert the predicte class result to numpy
   result_np = pred_class.data.cpu().numpy()
 
+  # return a dic, the key is class (but is a number) and the value is the number of this class
   count = Counter(result_np)
+  # 针对数据写入问题，修改了以下代码。先把counter的结果变为字典.然后把结果res_dic也保留为字典。
+  # 之前的错误在于把new dic变为了json，所以最后的res中labels对应的结果是一个str而不是字典，这样就找不到了。
+  # 其他的class都能找到，因为它们都是字典。直接找label也能找到，因为这也是一个字典。
+  count = dict(count)  
   new_dic = count.copy()
 
+  # use the classes name, replace the number
   for i in count.keys():
     ind = int(i)
     new_key = classes[ind]
     new_dic[new_key] = new_dic.pop(i)
 
-  new_dic = json.dumps(new_dic,ensure_ascii=False)
-  res_dic = {'labels':new_dic}
+  # new_dic = json.dumps(new_dic,ensure_ascii=False)
+  # res_dic = {'labels':new_dic}
+
+  #new_dic = json.dumps(new_dic,ensure_ascii=False)
+  res_dic = {}
+  res_dic['labels'] = new_dic
+    # 后加入的
+  #res_dic = json.dumps(res_dic)
+
   filename = os.path.split(path)[1]
   filepath = os.path.split(path)[0]
-  # res_dic = {'image_name':filename}
-  # res_dic = {'image_path':filepath}
-
 
   res_dic['image_name'] = filename
   res_dic['image_path'] = filepath
   res_dic['path_name'] = path
+
+
   # json化之后不好再修改，因此最好到存入DB之前再做，关闭ASCII否则瑞典语有乱码
-  # json_res = json.dumps(res_dic,ensure_ascii=False)
+  #json_res = json.dumps(res_dic,ensure_ascii=False)
   # print('json file result:',json_res)
-  # return json_res
   return res_dic
+  #return json_res
 
 
 # 输入是一个图片的地址，输出为一张图片，可以直接把输出通过imwrite保存。

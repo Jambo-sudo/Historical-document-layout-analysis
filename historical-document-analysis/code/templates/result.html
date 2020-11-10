@@ -26,28 +26,45 @@
 	
 	<div class="intro">
 		<h1 style="text-align: center;">Document layout analysis</h1>
-		
 		<p>
-		The inference is over, you can preview all the results here. 
-		If you want to copy results, they are in the static/result folder 
-		If you mount a volume, then they should also in your local volume path too.
+			Inference done, you can preview all the results here. 
+			If you want to copy results, they are in the <b>static/result</b> folder. 
+			If you mount a volume, they should also in your local volume path too.
 		</p>
+
 		<p>
-		You can continue to input images. Our supported format are <b>JPG</b> and <b>PBM</b>,
-		the results are <b>JPG</b> format.
+			You can continue to input images below. Our supported format are <b>JPG</b> and <b>PBM</b>,
+			the results are <b>JPG</b> format. Or you can search in our database.
+		</p>
+
+		<form action="" enctype='multipart/form-data' method='POST' >
+			<input type="file" 
+			name="file" 
+			multiple
+			accept=".pbm,.jpeg,.jpg"
+			style="margin-top:10px;"/>
+			<br>
+			<input type="submit" value="submit" class="button-new" style="margin-top:5px;"/>
+		</form>
+
+		<br/>
+		<h3>Search in our database</h3>
+		<p>
+			In the image name box, you can enter the keyword of the image name, 
+			and we will return all the image results that contain the keyword. 
+			If you want to view all the results in the database, you can enter 'jpg'.
+			<br>
+			The image name is <b>NOT</b> case sensitive.
 		</p>
 		
+		<form action="{{ url_for('search') }}" method="GET">
+			<input type="text" name="name" placeholder="Image name">
+			<br>
+			<input type="submit" value="Search" style="margin-top:15px;"/>
+		</form>
+
 	</div>
 	
-    <form action="" enctype='multipart/form-data' method='POST' >
-        <input type="file" 
-        name="file" 
-        multiple
-        accept=".pbm,.jpeg,.jpg"
-        style="margin-top:10px;"/>
-        <br>
-        <input type="submit" value="submit" class="button-new" style="margin-top:5px;"/>
-    </form>
 
     <div class="main_part" style="text-align: center;">
 		<p id="image_name"></p>

@@ -33,6 +33,7 @@ def allowed_file(filename):
 
 # 检查MongoDB和图片是否匹配，如果找不到对应的图片就把MongoDB内部的对应数据删除。
 def check_data_match():
+    # 查找包含path name的所有不同结果
     image_list = mongo.db.result.distinct('path_name')
     #print('path list:',image_list)
     invalid_image = []
@@ -59,7 +60,7 @@ def check_exist(input_name):
             image_path = image_find['image_path'] 
             return  image_path
 
-@app.route('/', methods=['POST', 'GET'])  # 添加路由
+@app.route('/', methods=['POST', 'GET'])
 def upload():
     if request.method == 'POST':
         # 根据当前文件所在路径，创建一个储存image的文件夹
@@ -118,7 +119,71 @@ def upload():
         return render_template('result.html', image_list=Markup(reslist))
  
     return render_template('start.html')
- 
+
+@app.route('/search')
+def search():
+    '''
+    这里要注意对于python来说$表示正则表达式匹配一个字符串的末尾，所以当Python遇到$就会去判断。
+    所以要把这部分用引号括起来。
+    同样的在MongoDB的语法中key的值是不需要引号的，但是在Python中不用引号会被当成变量。
+    因此也要用引号。参见：https://stackoverflow.com/questions/28267831/passing-mongo-aggregation-to-python
+    '''
+
+    name = request.args.get('name')
+
+    # 对于较为复杂的情况，可以通过aggregate实现
+    # https://www.yangyanxing.com/article/aggregate_in_pymongo.html
+    #match = {'image_name':{$regex:name,$options:"$i"}}
+    #res_list = []
+    # pipeline = [
+    #     {'$match':{'image_name':{'$regex':name,'$options':'$i'}}},
+    #     {'$group':{'_id':'$image_name','res_list':{'$push':'$path_name'}}}
+
+    # res返回根据name找到的所有结果，结果是list，不区分大小写。
+    # 这里设置全局变量，否则search filter取不到。
+    global res, res_path
+    res = mongo.db.result.distinct('image_name', {'image_name':{'$regex':name,'$options':"$i"}})
+    res_no = len(res)
+
+    if res_no == 0:
+        return render_template('search_fail.html',keyword=name)
+
+    res_path = []
+    for i in res:
+        search_result_path = os.path.join('static/result', i)
+        res_path.append(search_result_path)
+
+    return render_template('search_found.html',keyword=name,res_NO=res_no,res_list=res,image_list=Markup(res_path))
+
+@app.route('/search_filter')
+def search_filter():
+    search_name = res
+    search_path = res_path
+    # 注意，这里不能用get因为传入的label都有相同的name，用get只能取到第一个值。
+    labels = request.args.getlist('labels')
+
+    # 对于用户传入的每一个label检查包含这个label的文件名，结果存到res_filter_all里面。
+    res_filter_all = []
+    for label in labels:
+        user_input = 'labels.' + label
+        res_tmp = mongo.db.result.distinct('image_name', {user_input:{'$exists':'true'}})
+        res_filter_all.append(res_tmp)
+    
+    # 对res_filter_all里面的每一项取并集。这里的intersection只能对set有用，list不行。
+    res_uni = set(res_filter_all[0])
+    for i in range(1, len(res_filter_all)):
+        res_uni = set.intersection(res_uni, set(res_filter_all[i]))
+    
+    res_uni_image = list(set.intersection(res_uni, set(search_name)))
+
+    filter_path = []
+    for i in res_uni_image:
+        filter_tmp_path = os.path.join('static/result', i)
+        filter_path.append(filter_tmp_path)
+        
+    return render_template('search_filter.html',res_list=search_name, search_labels=labels,res_labels=list(res_uni),inter=res_uni_image,image_list=Markup(filter_path))
+
+
 if __name__ == '__main__':
     app.debug = True
     app.run(host='0.0.0.0', port=5000)

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Thesis project</title>
+</head>
+
+<style>
+    .buttons1 {
+        height:40px;
+		background-size:contain;
+        text-align:center;
+    }
+	
+</style>
+
+<body>
+
+	<h1 style="text-align: center;">Document layout analysis</h1>
+
+	<p style="color:red; font-size:30px;">{{warning}}</p>
+    
+	<h3>Search in our database</h3>
+    <p>
+        In the image name box, you can enter the keyword of the image name, 
+        and we will return all the image results that contain the keyword. 
+		If you want to view all the results in the database, you can enter 'jpg'.
+		<br>
+        The image name is <b>NOT</b> case sensitive.
+    </p>
+    
+    <form method="GET">
+        <input type="text" name="name" placeholder="Image name">
+        <br>
+        <input type="submit" value="search"/>
+    </form>
+
+    <h3>Search result</h3>
+        {% block result %}
+        <p></p>
+        {% endblock %}
+
+    {% block filter %}
+    {% endblock %}
+
+    <div class="main_part" style="text-align: center;">
+        {% block main %}
+        <p id="image_name"></p>
+        <img id="image_show" width="450px" style="margin: 0 auto;" alt='image not found, please check file path static/result'>
+        </img>
+        
+        <div class="buttons">
+            <button id="pre" onclick="page_change(-1)" disabled="true">Previous</button>
+            <button id="next" onclick="page_change(1)">Next</button>
+            <h6 id="pageCount" style="display:inline">1/1</h6>
+        </div>
+        {% endblock %}
+    </div>
+
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+        var indexImage = 0;
+        //let imagelist = ['1990-075.jpg','1990-106.jpg','1990-188.jpg'];
+        let imagelist = {{image_list}};
+        
+        $("#image_show").attr('src', imagelist[indexImage]);
+        pageCount();
+        imageName();
+    
+        function page_change(nt) {
+        indexImage = indexImage + nt;
+        $("#image_show").attr('src', imagelist[indexImage]);
+        if (indexImage > 0) {
+                document.getElementById("pre").disabled=false;
+            }
+            else{
+            document.getElementById("pre").disabled=true;
+            }
+        if (indexImage == imagelist.length - 1) {
+                $('#next').attr('disabled', true);
+            }
+            else{
+            $('#next').attr('disabled', false);
+            }
+        pageCount();
+        imageName();
+        }
+        
+        function pageCount() {
+            $('#pageCount').text('page:' + (indexImage+1) + '/' + imagelist.length);
+        }
+        
+        function imageName(){
+            $('#image_name').text('Image name:' + " " + (imagelist[indexImage]));
+        }
+    </script>
+
+</body>
+</html>

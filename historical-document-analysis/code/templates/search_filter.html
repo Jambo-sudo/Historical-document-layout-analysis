@@ -1,0 +1,22 @@
+{% extends "search.html" %}
+
+{% block result %}
+<p>
+    For your filter label: {{search_labels}},
+    we found those result: {{res_labels}}. 
+    <br/>
+    <br/>
+    For your search name, we found those result, 
+    there are: {{res_list}}. <br/>
+    <br/>
+    The intersection of your search image name and filter labels are: {{inter}}.
+</p>
+{% endblock %}
+
+
+{% block main %}
+<p style="color:skyblue; font-size:30px;">
+    You can preview all filter results below:
+</p>
+    {{super()}}
+{% endblock %}

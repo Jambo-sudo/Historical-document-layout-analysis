@@ -6,12 +6,6 @@
 </head>
 
 <style>
-    .buttons1 {
-        height:40px;
-		background-size:contain;
-        text-align:center;
-    }
-	
 	.bg {
 	background-image: url(static/background.jpg);
 	background-repeat:no-repeat;
@@ -21,7 +15,6 @@
 	height:400px;
 	width: 100%;
 	}
-	
 </style>
 
 
@@ -41,13 +34,12 @@
 	The model inference part uses <a href="https://arxiv.org/abs/1703.06870">Mask-RCNN</a> 
 	and runs on the <a href="https://github.com/facebookresearch/detectron2">detectron2</a> framework. 
 	The AP of this model is <b>0.6</b>.
-	
-	The inference part don't requires CUDA. But if your device has a CUDA-based GPU, it will be enabled without modifying the code. 
+	The inference part don't requires CUDA. But if your device has CUDA, it will be enabled without modifying the code. 
 	Our test platform is Intel i7-8809g, without CUDA, inferring a single image takes around 7 seconds.
 	For more information you can find in this
 	<a href="https://github.com/Jambo-sudo/Historical-document-layout-analysis/blob/main/README.md">github</a>.
 	</p>
-	
+
 	<br/>
 	<h2>How to use</h2>
 	<p>
@@ -58,6 +50,7 @@
 	
 	<p style="color:red; font-size:30px;">{{warning}}</p>
 	
+	<h3>Upload image to infer</h3>
     <form action="" enctype='multipart/form-data' method='POST'>
         <input type="file" 
                 name="file" 
@@ -65,9 +58,26 @@
                 accept=".pbm,.jpeg,.jpg,"
                 style="margin-top:20px;"/>
         <br>
-        <input type="submit" value="Upload" class="button-new" style="margin-top:15px;"/>
-    </form>
+        <input type="submit" value="Upload" style="margin-top:15px;"/>
+	</form>
+
+	<br/>
+	<h3>Search in our database</h3>
+    <p>
+        In the image name box, you can enter the keyword of the image name, 
+        and we will return all the image results that contain the keyword. 
+		If you want to view all the results in the database, you can enter 'jpg'.
+		<br>
+        The image name is <b>NOT</b> case sensitive.
+	</p>
 	
+    <form action="{{ url_for('search') }}" method="GET">
+        <input type="text" name="name" placeholder="Image name">
+        <br>
+        <input type="submit" value="Search" style="margin-top:15px;"/>
+    </form>
+
+
 	<div class="main_part" style="text-align: center;">
 		<p id="image_name"> Example of result
 		</p>

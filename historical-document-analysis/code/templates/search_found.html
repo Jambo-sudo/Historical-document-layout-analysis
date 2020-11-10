@@ -1,0 +1,33 @@
+{% extends "search.html" %}
+
+{% block result %}
+<p>For your search: <b>{{keyword}}</b></p>
+<p>We found result: <b>{{res_NO}}.</b> 
+    <br> There are: {{res_list}}
+</p>
+{% endblock %}
+
+{% block filter %}
+<h3>Result filter</h3>
+<p>
+    Since we found multiple results in our database, you can select labels to filter the results.
+    Select the labels you want in the checkbox below, you can choose more than one labels.
+</p>
+
+<form action= "{{ url_for('search_filter') }}" method='GET'>
+	Caption: <input type="checkbox" name="labels" value="caption" /><br />
+	Figure: <input type="checkbox" name="labels" value="figure" /><br />
+    Page: <input type="checkbox" name="labels" value="page" /><br />
+    Title: <input type="checkbox" name="labels" value="title" /><br />
+    Table: <input type="checkbox" name="labels" value="table" /><br />
+    Text: <input type="checkbox" name="labels" value="text" /><br />
+    <input type="submit" value="Submit">
+</form>
+{% endblock %}
+
+{% block main %}
+<p style="color:skyblue; font-size:30px;">
+    You can preview all search results below:
+</p>
+    {{super()}}
+{% endblock %}
