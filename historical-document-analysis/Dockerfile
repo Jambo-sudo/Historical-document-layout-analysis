@@ -1,4 +1,4 @@
-# from: https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile
+# see: https://github.com/facebookresearch/detectron2/blob/master/docker/Dockerfile
 
 FROM nvidia/cuda:10.1-cudnn7-devel
 #FROM nvidia/cuda:10.2-cudnn7-devel-ubuntu18.04
