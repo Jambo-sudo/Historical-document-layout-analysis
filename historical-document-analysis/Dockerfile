@@ -59,7 +59,7 @@ WORKDIR /home/appuser/detectron2_repo
 # copy our code to work dir，weight should in code dir
 # https://drive.google.com/file/d/1-tUA7c8Mlsxwh1hiCldrs-6sDNqQivGm/view?usp=sharing
 # https://www.dropbox.com/s/hfhsdpvg7jesd4g/pub_model_final.pth?dl=0
-RUN wget -P /home/appuser/detectron2_repo/code https://www.dropbox.com/s/hfhsdpvg7jesd4g/pub_model_final.pth?dl=0 -O pub_model_final.pth
+# RUN wget -P /home/appuser/detectron2_repo/code https://www.dropbox.com/s/hfhsdpvg7jesd4g/pub_model_final.pth?dl=0 -O pub_model_final.pth
 COPY --chown=1000:1000 code /home/appuser/detectron2_repo/code
 COPY DLA_mask_rcnn_X_101_32x8d_FPN_3x.yaml /home/appuser/detectron2_repo/configs
 
