@@ -12,6 +12,8 @@ The requirements.txt contains the libraries needed. In the process of building d
 To run this project, you need to install docker and docker compose. The test platform is docker based on WSL2. CUDA is not necessary. If your device has CUDA, it will be used by default. If you don't want to use CUDA, then you can modify it in code/deteinfer.py.
 
 ## Use our model weight
+Copy build.sh file in your local machine, and run . ./build.sh.
+OR
 Copy this folder in your local machine, download the model weight from the above link, copy the model weight into code folder. Than, cd to this folder and run `docker-compose up`. When you see 2 dockers start, open the browser and enter localhost:5000. If all goes well, you should see the start page.
 
 In addition, the detectron2 image is more than 7 GB, it may take half an hour to download if the image not available locally.
