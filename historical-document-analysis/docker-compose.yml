@@ -2,7 +2,7 @@ version: "3"
 
 services:
   detectron2:
-    image: jambosudo/layout_analysis
+    image: layout_analysis
     build:
       context: .
       args:
