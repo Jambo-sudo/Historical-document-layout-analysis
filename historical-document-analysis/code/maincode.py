@@ -16,7 +16,8 @@ mongo = PyMongo(app, uri="mongodb://mongodb:27017/result")
 
 
 model = "/home/appuser/detectron2_repo/configs/DLA_mask_rcnn_X_101_32x8d_FPN_3x.yaml"
-model_weight = '/home/appuser/detectron2_repo/code/pub_model_final.pth'
+#model_weight = '/home/appuser/detectron2_repo/code/pub_model_final.pth'
+model_weight = '/home/appuser/detectron2_repo/pub_model_final.pth'
 
 # 使得能够输出瑞典语
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
