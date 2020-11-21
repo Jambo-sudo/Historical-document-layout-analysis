@@ -59,7 +59,7 @@ To run this project, you need to install docker and docker compose. The test pla
 Copy docker-compose under **this path** (that is, the directory you are currently in. We have another docker-compose in historical-document-analysis, NOT that one) to the local. Run `docker-compose up`. 
 
 All dependencies will be automatically installed, and two dockers will run after the installation is complete, one is the database and the other is model inference. When you see 2 dockers start, open the browser and enter localhost:5000. If all goes well, you should see the start page. 
-In this way, our docker-compose will pull the image directly from the docker hub, without the dockerfile. Therefore, you **cannot** modify anything until the docker-compose build completed. So if you want to use your own model and weight, then I recommend you to use shell script.
+In this way, our docker-compose will pull the image directly from the docker hub, without the dockerfile. Therefore, you **cannot** modify anything until the docker-compose build complete. So if you want to use your own model and weight, then I recommend you to use shell script.
 
 ### Use shell script
 Copy build.sh to your local path, than, cd to this path and run `. ./build.sh`.
@@ -70,7 +70,7 @@ This shell script is very simple, so you can also complete all the steps manuall
 ### Use your own model
 If you use our build.sh, you can use the weights trained by yourself, just change the wget link in the second line of the shell script to your own model. But if the model you used is not in the config folder provided by detectron2 (see configs folder in our model docker), you need to provide a corresponding YAML file as well, just like the DLA_mask_rcnn_X_101_32x8d_FPN_3x.yaml in historical-document-analysis folder. 
 
-In short, using your own model requires the following steps.
+In short, using your own model requires the following steps:
 1. Modify the penultimate command in the dockerfile, change DLA_mask_rcnn_X_101_32x8d_FPN_3x.yaml to your own yaml.
 2. Copy your model weight to code folder. You can do this by changing the link of wget function in the second line of build.sh. Or you can do it manually without build.sh.
 3. Go to code/maincode.py modify line 18,19. Use your model and weights instead of ours.
