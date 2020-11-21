@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  detectron2:
+    image: jambosudo/layout_analysis:v1.6
+    command: python3 code/maincode.py
+    ports:
+        - "5000:5000"
+    user: ${USER_ID:-1000}
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+    depends_on:
+        - mongodb
+
+  mongodb:
+    image: "mongo:latest"
+    ports:
+        - "27017:27017"
+
