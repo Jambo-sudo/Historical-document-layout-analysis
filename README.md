@@ -53,7 +53,24 @@ The inference result is an annotated image and a json file containing the infere
 When all the input has been processed (found in the database, or completed inference), we will get a result list, which contains the path of all the result images. This list will be sent to the front end, HTML will read this list, and show the result. Since we use cv2 to read and save images. In order to avoid save errors, all resulting images will be converted to jpg format.
 
 ## How to use
-We provide docker compose to build up whole project, you can use your own model as well.
+To run this project, you need to install docker and docker compose. The test platform is docker desktop based on WSL2. CUDA is not necessary. If your device has CUDA, it will be used by default. If you don't want to use CUDA, then you can modify it in code/deteinfer.py. Our image requires about 8GB of storage space, and you also need some space to store the inference results. Therefore, we recommend at least 10GB of storage and 4G of memory.
+
+### Use docker-compose
+Copy docker-compose under **this path** (that is, the directory you are currently in. We have another docker-compose in historical-document-analysis, NOT that one) to the local. Run `docker-compose up`. All dependencies will be automatically installed, and two dockers will run after the installation is complete, one is the database and the other is model inference. When you see 2 dockers start, open the browser and enter localhost:5000. If all goes well, you should see the start page. 
+In this way, our docker-compose will pull the image directly from the docker hub, without the dockerfile. Therefore, you **cannot** modify anything until the docker-compose build completed. So if you want to use your own model and weight, then I recommend you to use shell script.
+
+### Use shell script
+Copy build.sh to your local path, than, cd to this path and run `. ./build.sh`.
+
+
+### Use shell script
+You can use the weights trained by yourself, but if the model you used is not in the config folder provided by detectron2, you need to provide a corresponding YAML file as well, just like the DLA_mask_rcnn_X_101_32x8d_FPN_3x.yaml in this folder.
+
+After that, follow this instruction:
+1. Modify the penultimate command in the dockerfile, change DLA_mask_rcnn_X_101_32x8d_FPN_3x.yaml to your own yaml.
+2. Copy your model weight to code folder.
+3. Go to code/maincode.py modify line 18,19. Use your model and weights instead of ours.
+
 
 ## Environment
 The inference part don't requires CUDA. But if your device has a CUDA-based GPU, it will be enabled without modifying the code. Our test platform is Intel i7-8809g, without CUDA, inferring a single image takes around 7 seconds. 
