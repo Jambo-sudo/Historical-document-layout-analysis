@@ -24,13 +24,13 @@ Since our inference part is written in Python, naturally we hope to build the ba
 You can find more details in the code/maincode.py file.
 
 ### Frontend
-The frontend contains two html files, start.html and result.html. Initially, flask will return start.html, and when the backend finished, it will return result.html. 
+The frontend contains some html files, you can find all of then in template folder. Initially, flask will return start.html, and when the backend finished, it will return result.html. 
 
 The start page look like this:
 <img src="image/start.png" text-align:center alt="web start page" width="1000"> 
 When the infer done, you can see the result in webpage, like below:
 <img src="image/result.png" text-align:center alt="web start page" width="1000"> 
-When the input is multiple, you can switch the result through the next and previous buttons, and the page shows the total number of results. 
+When the input is multiple, you can switch the result through the next and previous buttons, and the page shows the total number of results. You can also use the search and filter functions, and we will return the corresponding webpage.
 
 ## Model Training
 Detectron2 provides a pre-trained model's weight we can simply use it though [model zoo](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md). Obviously, we cannot use this weight in our project directly. In order to make this weight suitable for our project, we need to prepare a training set and train this weight again. This process is also called transfer learning. In this project, we use [labelme](https://github.com/wkentaro/labelme) to label our data. We manually annotated 550 data and 6919 labels, 500 data for training and 50 data for test. Detectron2 provides a [colab tutorial](https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5) where you can easily train your own model with a free GPU. 
