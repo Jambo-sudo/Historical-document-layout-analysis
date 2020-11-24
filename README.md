@@ -15,7 +15,7 @@ Another docker is [MongoDB](https://www.mongodb.com/), which is a NoSQL database
 * Image name:"example.jpg"
 * Image path:"/home/appuser/detectron2_repo/code/static/result"  
 
-The labels part including all the labels detected in our input image and the number of each label. Since we use MongoDB to store these data, if necessary, the inference results can do regular search.
+The labels part including all the labels detected in our input image and the number of each label. Since we use MongoDB to store these data, if necessary, the inference results can do regular search. In this project, we have implemented basic search and filtering functions by labels. Users can enter the image title (or part of the title) to search for matching results. Or enter "jpg" to view all the results, because all our result are in jpg format. After getting the results, the user can also select one or more of the 6 labels to filter the results. For example, if the user selects "text" + "caption", then we will only display the results that contain both types of labels. 
 
 ### Backend
 Since our inference part is written in Python, naturally we hope to build the backend through Python. In this project, we use the flask framework. Flask is good enough for this project, and it can be scaled up easily if necessary. Flask is used to achieve the following two tasks:
@@ -30,7 +30,7 @@ The start page look like this:
 <img src="image/start.png" text-align:center alt="web start page" width="1000"> 
 When the infer done, you can see the result in webpage, like below:
 <img src="image/result.png" text-align:center alt="web start page" width="1000"> 
-When the input is multiple, you can switch the result through the next and previous buttons, and the page shows the total number of results.
+When the input is multiple, you can switch the result through the next and previous buttons, and the page shows the total number of results. 
 
 ## Model Training
 Detectron2 provides a pre-trained model's weight we can simply use it though [model zoo](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md). Obviously, we cannot use this weight in our project directly. In order to make this weight suitable for our project, we need to prepare a training set and train this weight again. This process is also called transfer learning. In this project, we use [labelme](https://github.com/wkentaro/labelme) to label our data. We manually annotated 550 data and 6919 labels, 500 data for training and 50 data for test. Detectron2 provides a [colab tutorial](https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5) where you can easily train your own model with a free GPU. 
