@@ -23,14 +23,27 @@ Since our inference part is written in Python, naturally we hope to build the ba
 2. Connect to MongoDB through the PyMongo library and insert the json file to MongoDB.
 You can find more details in the code/maincode.py file.
 
-### Frontend
+### Inference webpage
 The frontend contains some html files, you can find all of then in template folder. Initially, flask will return start.html, and when the backend finished, it will return result.html. 
 
 The start page look like this:
 <img src="image/start.png" text-align:center alt="web start page" width="1000"> 
 When the infer done, you can see the result in webpage, like below:
-<img src="image/result.png" text-align:center alt="web start page" width="1000"> 
-When the input is multiple, you can switch the result through the next and previous buttons, and the page shows the total number of results. You can also use the search and filter functions, and we will return the corresponding webpage.
+<img src="image/result.png" text-align:center alt="web result page" width="1000"> 
+When the input is multiple, you can switch the result through the next and previous buttons, and the page shows the total number of results. 
+
+### Search and filter webpage
+You can input a batch of images to build your own database. When you have a database, use "search" to get matching results. For example, search "1990". It will reture all the images which including 1990 in the image's name.
+
+<img src="image/search.png" text-align:center alt="web search page" width="1000">   
+We use regular expressions in MongoDB to search results. In serach result part, we provide basic information of your search. And you can preview all results in the below.   
+
+When you get multiple search results, you can use "filter" to further filter the results. There are 6 checkboxes in the filter section, and each checkbox represents a label. You can check the corresponding checkbox to determine the labels you want to keep. 
+For example:  
+<img src="image/filter.png" text-align:center alt="web filter page" width="1000">  
+
+In this case, we select "caption" and "figure". Thus, the result we get is contains both the search keyword ("1990" in this case) in image's name and the labels caption and figure.  
+
 
 ## Model Training
 Detectron2 provides a pre-trained model's weight we can simply use it though [model zoo](https://github.com/facebookresearch/detectron2/blob/master/MODEL_ZOO.md). Obviously, we cannot use this weight in our project directly. In order to make this weight suitable for our project, we need to prepare a training set and train this weight again. This process is also called transfer learning. In this project, we use [labelme](https://github.com/wkentaro/labelme) to label our data. We manually annotated 550 data and 6919 labels, 500 data for training and 50 data for test. Detectron2 provides a [colab tutorial](https://colab.research.google.com/drive/16jcaJoc6bCFAQ96jDe2HwtXj7BMD_-m5) where you can easily train your own model with a free GPU. 
