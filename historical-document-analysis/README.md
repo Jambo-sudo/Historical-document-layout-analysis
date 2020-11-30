@@ -1,4 +1,5 @@
 # What in this folder
+The code folder contains our main function.  
 
 The docker-compose.yml file in this folder will build two dockers. One is MongoDB, we will pull the official image to build. Another docker contains flask and detectron2, which are used to infer and build web pages. This docker will be built through the Dockerfile. In addition to building detectron2, this dockerfile will copy all the code in this folder to the container. And execute our maincode.py when it start.
 
