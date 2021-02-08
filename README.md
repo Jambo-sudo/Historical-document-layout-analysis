@@ -70,9 +70,8 @@ When all the input has been processed (found in the database, or completed infer
 To run this project, you need to install docker and docker compose. The test platform is docker desktop based on WSL2. CUDA is not necessary. If your device has CUDA, it will be used by default. If you don't want to use CUDA, then you can modify it in code/deteinfer.py. Our image requires around 8GB of storage space, you also need some space for MongoDB image and a result directory to store the inference results. Therefore, we recommend at least 10GB of storage and 4G of memory.
 
 ### Use docker-compose
-Copy docker-compose under **this path** (that is, the directory you are currently in. We have another docker-compose in historical-document-analysis, NOT that one) to the local. Run `docker-compose up`. 
-
-All dependencies will be automatically installed, and two dockers will run after the installation is complete, one is the database and the other is model inference. When you see 2 dockers start, open the browser and enter localhost:5000. If all goes well, you should see the start page. 
+Copy docker-compose under **this path** , to the local. Note: copy the docker-compose file in the directory you are currently in. We have another docker-compose in historical-document-analysis, NOT that one. The docker-compose in this path will use the image from docker hub, but the docker-compose in historical-document-analysis will use the local dockerfile. 
+Run `docker-compose up`. All dependencies will be automatically installed, and two dockers will run after the installation is complete, one is the database and the other is model inference. When you see 2 dockers start, open the browser and enter localhost:5000. If all goes well, you should see the start page. 
 In this way, our docker-compose will pull the image directly from the docker hub, without the dockerfile. Therefore, you **can not** modify anything until the docker-compose build complete. So if you want to use your own model and weight, then I recommend you to use shell script.
 
 ### Use shell script
