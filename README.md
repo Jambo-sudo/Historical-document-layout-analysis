@@ -72,7 +72,7 @@ To run this project, you need to install docker and docker compose. The test pla
 ### Use docker-compose
 Copy docker-compose under **this path** (that is, the directory you are currently in. We have another docker-compose in historical-document-analysis, NOT that one) to the local. Run `docker-compose up`. 
 
-All dependencies will be automatically installed, and two dockers will run after the installation is complete, one is the database and the other is model inference. When you see 2 dockers start, open the browser and enter <your localhost>:5000. If all goes well, you should see the start page. 
+All dependencies will be automatically installed, and two dockers will run after the installation is complete, one is the database and the other is model inference. When you see 2 dockers start, open the browser and enter localhost:5000. If all goes well, you should see the start page. 
 In this way, our docker-compose will pull the image directly from the docker hub, without the dockerfile. Therefore, you **can not** modify anything until the docker-compose build complete. So if you want to use your own model and weight, then I recommend you to use shell script.
 
 ### Use shell script
