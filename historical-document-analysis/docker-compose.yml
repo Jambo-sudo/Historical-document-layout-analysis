@@ -3,6 +3,8 @@ version: "3"
 services:
   detectron2:
     image: layout_analysis
+    volumes:
+      - /home/jianbo/detec_code_volume:/home/appuser/detectron2_repo/code
     build:
       context: .
       args:

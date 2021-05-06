@@ -34,7 +34,7 @@
 	The model inference part uses <a href="https://arxiv.org/abs/1703.06870">Mask-RCNN</a> 
 	and runs on the <a href="https://github.com/facebookresearch/detectron2">detectron2</a> framework. 
 	The AP of this model is <b>0.6</b>.
-	The inference part don't requires CUDA. But if your device has CUDA, it will be enabled without modifying the code. 
+	The inference part don't requires CUDA. However, if your device has CUDA, it will be automatically enabled.
 	Our test platform is Intel i7-8809g, without CUDA, inferring a single image takes around 7 seconds.
 	For more information you can find in this
 	<a href="https://github.com/Jambo-sudo/Historical-document-layout-analysis/blob/main/README.md">github</a>.
@@ -71,13 +71,15 @@
         The image name is <b>NOT</b> case sensitive.
 	</p>
 	
+	<!--定义search方法，调用maincode内的search方法，上传数据类型为text，名字为name。
+	占位符为image name。search方法下包含一个submit按钮。-->
     <form action="{{ url_for('search') }}" method="GET">
         <input type="text" name="name" placeholder="Image name">
         <br>
         <input type="submit" value="Search" style="margin-top:15px;"/>
     </form>
 
-
+	<!--一个展示图片-->
 	<div class="main_part" style="text-align: center;">
 		<p id="image_name"> Example of result
 		</p>
