@@ -21,7 +21,7 @@ model_weight = '/home/appuser/detectron2_repo/code/pub_model_final.pth'
 # 设置上传文件尺寸，单个BSON文件限制最大为16M。超过16M用GridFS来存储和恢复，将大文件分割成多个小的chunk（256k/个）
 #app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-# 使得能够输出瑞典语，enable swedish
+# 使得能够输出瑞典语, enable swedish
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # 设置允许输入的图片文件格式。设定格式是为了防止跨站脚本攻击(XSS)。
