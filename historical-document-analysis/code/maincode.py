@@ -35,9 +35,10 @@ def allowed_file(filename):
     return '.' in filename and ext.upper() in ALLOWED_EXTENSIONS
 
 # 检查MongoDB和实际的图片是否匹配，如果找不到对应的图片就把MongoDB内部的对应数据删除，并返回失效的list。
-# 这是为了防止MongoDB内有图片和图片的labels结果，但是却没有在指定的路径上找到图片(用户误删，或其他原因)，这会使得前端无法显示结果。
+# 这是为了防止MongoDB内有图片和图片的labels字典，但是却没有在指定的路径上找到图片(用户误删，或其他原因)，这会使得前端无法显示结果。
 def check_data_match():
-    # 查找path_name的所有不同结果(应该都是unique的，要是不出bug...)
+    # 这里的result是DB里面的collection，如果初始化的时候不是这个名字那么每次调用MongoDB的时候都要改掉。
+    # distinct返回path_name的所有不同结果(所有的path_name都应该是unique的，要是不出bug...)
     image_list = mongo.db.result.distinct('path_name')
     #print('path list:',image_list)
     invalid_image = []
@@ -45,17 +46,16 @@ def check_data_match():
     for image in image_list:
         exists = os.path.exists(image)
         if exists is not True:
-            mongo.db.result.remove({"path_name":image})
+            mongo.db.result.remove({"path_name":image}) # 没有在指定路径找到图片，删除MongoDB中path_name为image的文档
             invalid_image.append(image)
             print('this image not find:',image,'we will deleted')
     return invalid_image
 
-# 根据输入名检查数据库中是否包含结果，如果没有返回false，可以进行推断。如果有返回图片的路径。
+# 根据输入名检查数据库中是否包含结果，如果没有返回false，之后进行推断；如果有返回图片的路径，跳过推断。
 # 因为有check_data_match()方法，因此如果MongoDB内部有图片路径，那么一定能找到这个图片。
 def check_exist(input_name):
-        # 这里的result是DB里面的collection，如果初始化的时候不是这个名字记得改掉。
-        # 这里检查名字不能带拓展名，因为最后保存的结果是jpg格式的，而输入不一定是的。但是最后找图片的时候，必须带拓展。
-        #os.path.splitext(input_name)[0]
+        # 这里检查图片名不能带拓展名，因为最后保存的结果是jpg格式的，而输入不一定是的。但是最后找图片的时候，必须带拓展。
+        #os.path.splitext(input_name)[0] # 获取不带拓展的文件路径+文件名
         image_find = mongo.db.result.find_one({'image_name':input_name})
         if image_find is None:
             print('This image doesnot find:',input_name)
@@ -71,57 +71,56 @@ def upload():
     1. 定义保存图片的路径：static/result。
     2. 调用check_data_match()检查路径中的图片结果和MongoDB的数据是否匹配。
     3. 检查输入的文件名是否合法。
-    4. 循环检查输入是否在DB内。如果存在把路径添加到reslist，不存在执行deteinfer，把结果路径存进reslist，标注存入DB。
+    4. 循环检查输入是否在DB内。如果存在把路径添加到reslist，不存在先执行deteinfer，再把结果路径存进reslist，结果dict存入DB。
     5. 将存有所有结果路径的reslist传给result.html。
     '''
-
-    # 返回当前maincode.py文件所在路径，基于此路径建立一个储存结果image的文件夹。
-    # 如果没有该文件夹则创建(不出bug不会，已经创建好了)。
     if request.method == 'POST':
+        # basepath 是当前maincode.py文件所在路径。file_path基于此路径建立一个储存结果image的文件夹。
+        # 这个result文件夹是已经创建好的，如果没有则创建(不出bug不会)。
         basepath = os.path.dirname(__file__) 
         file_path = os.path.join(basepath, 'static/result')
         if not os.path.exists(file_path):
             os.makedirs(file_path, 755)
 
-        # 首先检查MongoDB中的json和result中的图片文件是否对应
+        # 首先检查MongoDB中的记录和result中的图片文件是否对应
         invalid_image = check_data_match()
         if invalid_image:
             #flash('Those image not match!',invalid_image)
             print('check image match DB,those are not match:',invalid_image)
         else:
-            print('check image match DB, all images matched')
+            print('check image match DB, all images matched. Go to next step')
 
         # 检查输入的文件扩展名是否非法。如果非法的拓展名，或者没有扩展名，返回false。
-        # 输入可以是多个文件，getlist()内的名字在start.html内post方法处定义。
+        # 输入可以是多个文件，getlist()内的名字'file'在start.html内post方法处定义。
         files = request.files.getlist('file')
         for file in files:
-            if not (file and allowed_file(file.filename)):
-                return render_template('start.html',warning = "Illegal input! Please use JPG or PBM file.")
+            if not (file and allowed_file(file.filename)):  # flask中使用file得到的不仅是文件名还包括其他信息，用file.filename获得文件名
+                return render_template('start.html',warning = "Illegal input! Please use JPG or PBM file and keep the extension.")
 
         # 输入非空，并且合法，进入下一步。
-        # 检查对应的名字是否在MongoDB，如果不在执行推断，如果在则返回路径。
+        # 检查对应的名字是否在MongoDB，如果不在执行推断，如果在则直接返回路径。
         reslist = []
         for file in files:
             # 始终使用secure_filename，来检查文件名。这会把一些原本的../类型的字符修改。
             # “永远不要信任用户输入”，哪怕用户就是我自己(∩~∩)。
             image_name = secure_filename(file.filename)
-            # 所有的结果都是保存为 jpg格式的。
+            # 所有的结果都是保存为 jpg 格式的。
             check_name = os.path.splitext(image_name)[0]+'.jpg'
             #print('jpg input name:',check_name)
             check_result = check_exist(check_name)
-            check_result_path = os.path.join('static/result', check_name)
+            check_result_path = os.path.join('static/result', check_name) # 也是最后保存图片的位置
             #print('check result path:',check_result_path)
             
             # 如果在数据库中找到图片，打印文件名并返回路径。
             #if check_result is not False:
             if check_result:
-                print('find result in our database!:',check_name,'\n')
+                print('find result in our database, we do not need infer this image:',check_name,'\n')
                 reslist.append(check_result_path)
 
             # 如果没有找到，首先保存上传的图片，然后推断。
             else:
                 # 保存图片
-                upload_path = os.path.join(file_path, image_name)
+                upload_path = os.path.join(file_path, image_name) # file_path = basepath+static/result
                 file.save(upload_path)
                 # print('input save,file path:',file_path,'file name:',image_name,'upload path:',upload_path)
 
@@ -131,34 +130,35 @@ def upload():
                 infer_name = os.path.split(infer_path)[1]
                 infer_result_path = os.path.join('static/result', infer_name)
                 print("done infer, result save in:",infer_result_path,'infer name:',infer_name,'\n')
-                reslist.append(infer_result_path)
+                reslist.append(infer_result_path)  # 添加到结果列表
 
                 # 这里保存为json之后会搜索不到，因此保存为字典。关闭ASCII避免瑞典语有乱码。
                 #json_res = json.dumps(res_dic,ensure_ascii=False)
+                # 将推断结果添加到 MongoDB
                 mongo.db.result.insert_one(json_res)
-                # print('done this file, reslist is:',reslist)
 
         # 这里的Markup很关键！！！不用的话这个list传递到JS后会根据ASCII转义表把数组的单引号转义为&#39，会报错。
-        # 在jinja2中渲染模板的render_template会自动转义，因此要通过Markup来关闭，这样传给JS的才会是一个数组。
+        # 在jinja2中渲染模板的render_template会自动转义，因此要通过Markup来关闭转义，这样传给JS的才会是一个数组。
         # 但是出于安全原因，绝对不要对用户的直接输入用markup。
         return render_template('result.html', image_list=Markup(reslist))
- 
+    # 初始阶段，返回起始页面 start.html
     return render_template('start.html')
 
 @app.route('/search')
 def search():
     '''
-    search方法，在HTML文件中通过search方法来调用。对于DB中已经保存了推断结果的情况，调用该方法来搜索指定结果。
+    search方法，对于DB中已经保存了推断结果的情况，调用该方法来搜索指定结果。
+    传入参数是用户想要查询的文件名，返回所有的匹配结果。结果将可以实时预览，有多个结果时可以手动切页。
     使用正则表达式来获得和输入关键词匹配的图片名，把找到的结果存入res。
     如果res长度为0，说明无匹配结果，返回search_fail.html，传入参数为用户输入的搜索keyword。
     如果res长度非0，把所有res的路径添加到res_path。返回search_found.html，传入参数为keyword，结果数量res_no，
     图片名res和图片路径res_path。
     '''
 
-    # name是HTML文件中定义的名字。
+    # name是search.HTML文件中定义的名字。
     name = request.args.get('name')
 
-    # 对于较为复杂的搜索，可以通过aggregate实现
+    # 对于较为复杂的搜索，可以通过aggregate实现，这里不需要。
     # https://www.yangyanxing.com/article/aggregate_in_pymongo.html
     #match = {'image_name':{$regex:name,$options:"$i"}}
     #res_list = []
@@ -174,7 +174,7 @@ def search():
     # 参见：https://stackoverflow.com/questions/28267831/passing-mongo-aggregation-to-python
     # distinct语句对image_name字段查询，如果image_name字段匹配用户的输入，那么返回对应结果。option i表示不区分大小写。
     res = mongo.db.result.distinct('image_name', {'image_name':{'$regex':name,'$options':"$i"}})
-    res_no = len(res)
+    res_no = len(res)  # 找到的结果数量
 
     # 没有找到和关键字匹配的结果。返回search_fail.html页面，并传入用户的搜索关键词。 
     if res_no == 0:
@@ -185,18 +185,19 @@ def search():
     for i in res:
         search_result_path = os.path.join('static/result', i)
         res_path.append(search_result_path)
-
+    # 传入HTML需要的所有参数，注意Markup禁止转义。
     return render_template('search_found.html',keyword=name,res_NO=res_no,res_list=res,image_list=Markup(res_path))
 
 @app.route('/search_filter')
 def search_filter():
     '''
-    search_filter方法对用户search的结果进行过滤，过滤基于labels。filter前端写在search_found.html里面，
+    search_filter方法对用户search的结果进行进一步过滤，过滤基于labels。filter前端写在search_found.html里面，
     因为只有找到了结果才能过滤。
     本方法传入2个变量，search_name表示搜索结果图片名，这里只有执行了前一步的search方法才会产生这个变量。
     labels变量由用户传入，通过CheckBox选择需要的labels，可多选。
     返回search_filter.html页面。
     '''
+    # 这里是 search 方法中定义的全局变量。
     search_name = res
     search_path = res_path
     # 注意，这里不能用get因为传入的labels都有相同的name，但是value不同，用get只能取到第一个值。
@@ -204,14 +205,14 @@ def search_filter():
 
     # 对于用户传入的每一个label，返回包含这个label的image_name，只要存在该label就返回，存在几个不重要。
     # 'labels.'+label 是因为MongoDB中每一个具体的label都被存在labels下。
-    # 这里应该可以优化，但是怎么弄呢。
+    # 这里应该可以优化，但是没想好怎么弄。
     res_filter_all = []
     for label in labels:
-        user_input = 'labels.' + label
+        user_input = 'labels.' + label  # MongoDB中所有的classes是保存在键labels下的一个字典，所以要用labels.+
         res_tmp = mongo.db.result.distinct('image_name', {user_input:{'$exists':'true'}})
         res_filter_all.append(res_tmp)
     
-    # 对res_filter_all里面的每一项取并集。这里的intersection只能对set有用，list不行。
+    # 对res_filter_all里面的每一项取并集，所有用户选择的labels都要有。这里的intersection只能对set有用，list不行。
     res_uni = set(res_filter_all[0])
     for i in range(1, len(res_filter_all)):
         res_uni = set.intersection(res_uni, set(res_filter_all[i]))
