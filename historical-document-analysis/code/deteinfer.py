@@ -1,9 +1,10 @@
 # coding:utf-8
 '''
-这部分代码是用来执行模型推断的，调用接口为：deteinfer.infer(upload_path,model,model_weight)
-输入参数分别为，input图片地址，使用模型的yaml文件和模型权重。
-返回内容是，标注好的结果图片(与输入图片同名)，包含图片路径和classes信息的字典。
-通常返回的结果图片被保存在result文件夹内，图片标注的字典则被存到MongoDB中。
+这部分代码是用来执行模型推断的，调用方法为：deteinfer.infer(upload_path,model,model_weight)
+输入参数分别为：待推断的图片地址，使用模型的yaml文件和该模型的权重。
+返回内容是，标注好的结果图片(与输入图片同名，后缀为jpg)，包含图片路径和labels信息的json字典。
+通常返回的结果图片被保存在static/result文件夹内，图片labels的json字典则被存到MongoDB中。
+注意：当推断完成后，原始的输入图片将被删除。
 '''
 import numpy as np
 import torch
@@ -20,7 +21,7 @@ MetadataCatalog.get("dla_train").thing_classes = ['caption', 'figure', 'page', '
 
 # 原始的输出图片没有class labels，通过这个方法添加labels。
 # 输入为预测的结果，和保存路径。输出为一个标记好了标签的字典。
-def convert_dic(pred_class, path):
+def convertDict(pred_class, path):
   classes = ['caption', 'figure', 'page', 'table', 'title', 'text']
 
   # convert the predicte class result to numpy
@@ -107,11 +108,11 @@ def infer(input_path,model,model_weight):
   if os.path.splitext(input_path)[-1] == ".jpg":
       cv2.imwrite(input_path,outs)
       print('input is a jpg file:',input_path)
-      return input_path,convert_dic(pred_class,input_path)
+      return input_path,convertDict(pred_class,input_path)
   else:
     image_name = os.path.splitext(os.path.split(input_path)[1])[0]
     print('image name:',image_name)
     jpg_name = os.path.join(os.path.split(input_path)[0],image_name+'.jpg')
     cv2.imwrite(jpg_name,outs)
     print('convert input to jpg:',jpg_name)
-    return jpg_name,convert_dic(pred_class,jpg_name)
+    return jpg_name,convertDict(pred_class,jpg_name)
