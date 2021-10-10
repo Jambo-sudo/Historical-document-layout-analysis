@@ -10,18 +10,18 @@ from flask_pymongo import PyMongo
 import deteinfer
 
 app = Flask(__name__)
-app.secret_key = 'some_secret'
+app.secret_key = 'some_secret' # 没有设置
 #mongo = PyMongo(app, uri="mongodb://localhost:27017/result")  
 mongo = PyMongo(app, uri="mongodb://mongodb:27017/result")  # 开启数据库实例
 
-# 模型的yaml文件和权重文件。
+# 从指定路径读取模型的yaml文件和权重文件。
 model = "/home/appuser/detectron2_repo/configs/DLA_mask_rcnn_X_101_32x8d_FPN_3x.yaml"
 model_weight = '/home/appuser/detectron2_repo/code/pub_model_final.pth'
 
-# 设置上传文件尺寸，单个BSON文件限制最大为16M。超过16M用GridFS来存储和恢复，将大文件分割成多个小的chunk（256k/个）
+# 设置上传文件尺寸，单个BSON文件限制最大为16M。超过16M用GridFS来存储和恢复，将大文件分割成多个小的chunk（256k/个）。
 #app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-# 使得能够输出瑞典语, enable swedish
+# 使得能够输出瑞典语, enable swedish（似乎不需要）。
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 # 设置允许输入的图片文件格式。设定格式是为了防止跨站脚本攻击(XSS)。
@@ -31,11 +31,11 @@ ALLOWED_EXTENSIONS = set(['JPG', 'JPGE', 'PBM'])
 
 # rsplit 分割得到'.'后的文件拓展名。如果没有拓展名或者拓展名不在ALLOWED_EXTENSIONS则返回false。
 def allowed_file(filename):
-    ext = filename.rsplit('.', 1)[1]
+    ext = filename.rsplit('.', 1)[1]  # 只分割一次，将文件名分为两部分，[1]取拓展名。
     return '.' in filename and ext.upper() in ALLOWED_EXTENSIONS
 
 # 检查MongoDB和实际的图片是否匹配，如果找不到对应的图片就把MongoDB内部的对应数据删除，并返回失效的list。
-# 这是为了防止MongoDB内有图片的labels结果，但是却没有指定的结果图片(用户误删，或其他原因)。
+# 这是为了防止MongoDB内有图片和图片的labels结果，但是却没有在指定的路径上找到图片(用户误删，或其他原因)，这会使得前端无法显示结果。
 def check_data_match():
     # 查找path_name的所有不同结果(应该都是unique的，要是不出bug...)
     image_list = mongo.db.result.distinct('path_name')
@@ -48,7 +48,6 @@ def check_data_match():
             mongo.db.result.remove({"path_name":image})
             invalid_image.append(image)
             print('this image not find:',image,'we will deleted')
-
     return invalid_image
 
 # 根据输入名检查数据库中是否包含结果，如果没有返回false，可以进行推断。如果有返回图片的路径。
