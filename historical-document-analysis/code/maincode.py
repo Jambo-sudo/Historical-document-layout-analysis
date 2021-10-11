@@ -233,5 +233,5 @@ def search_filter():
 
 
 if __name__ == '__main__':
-    #app.debug = True
+    # host='0.0.0.0'对所有的IP地址开放，可以在Jenkins设置具体的允许访问IP。
     app.run(host='0.0.0.0', port=5000)
